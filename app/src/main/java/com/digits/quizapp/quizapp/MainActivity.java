@@ -9,41 +9,86 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity {
 
+    private TextView Qusetion;
     private Button TrueButton;
     private Button FalseButton;
-    private TextView Qusetion;
+    private Button NextButton;
+
+    private String Answer;
+    private TrueFalse tf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        tf = new TrueFalse();
 
+        //Get questions and thier answers
         Qusetion = (TextView)findViewById(R.id.question);
-        Qusetion.setText(R.string.question1);
+        Qusetion.setText(tf.getQuestion());
+        Answer = tf.getAnswer();
 
+        //Intailze all buttons
         TrueButton = (Button) findViewById(R.id.True);
         FalseButton = (Button)findViewById(R.id.False);
+        NextButton = (Button)findViewById(R.id.Next);
 
+        Qusetion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tf.NextQuestion();
+                Qusetion.setText(tf.getQuestion());
+                Qusetion.setTextColor(Color.BLACK);
+                Answer = tf.getAnswer();
+            }
+        });
 
         TrueButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+                if(Answer.equals("True")){
                 Qusetion.setTextColor(Color.parseColor("#009900"));
                 Toast.makeText(MainActivity.this,
                         R.string.correct_toast,
-                        Toast.LENGTH_SHORT).show();
+                        Toast.LENGTH_SHORT).show();}
+                else{
+                    Qusetion.setTextColor(Color.parseColor("#CC3300"));
+                    Toast.makeText(MainActivity.this,
+                            R.string.incorrect_toast,
+                            Toast.LENGTH_SHORT).show();
+                }
+
             }
-        });
+        });//End of TrueButton listener
 
         FalseButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                Qusetion.setTextColor(Color.parseColor("#CC3300"));
-                Toast.makeText(MainActivity.this,
-                        R.string.incorrect_toast,
-                        Toast.LENGTH_SHORT).show();
+                if(Answer.equals("False")){
+                    Qusetion.setTextColor(Color.parseColor("#009900"));
+                    Toast.makeText(MainActivity.this,
+                            R.string.correct_toast,
+                            Toast.LENGTH_SHORT).show();}
+                else{
+                    Qusetion.setTextColor(Color.parseColor("#CC3300"));
+                    Toast.makeText(MainActivity.this,
+                            R.string.incorrect_toast,
+                            Toast.LENGTH_SHORT).show();
+                }
             }
-        });
+        }); //End of FalseButton Listener
+
+        NextButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                tf.NextQuestion();
+                Qusetion.setText(tf.getQuestion());
+                Qusetion.setTextColor(Color.BLACK);
+                Answer = tf.getAnswer();
+
+            }
+        }); // End of NextButton Listener
     }
 
 }
