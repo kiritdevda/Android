@@ -36,5 +36,5 @@ public class TrueFalse {
     public String getAnswer(){
         return Answer.get(counter);
     }
-
+    public int getTotalNumberOfQuestion(){return Question.size();}
 }

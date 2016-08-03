@@ -5,4 +5,9 @@
     <string name="question1">India is in Asia Contient?</string>
     <string name="incorrect_toast">Incorrect</string>
     <string name="correct_toast">Correct</string>
+    <string name="Next">Next</string>
+    <string name="Cheat_button">Cheat</string>
+    <string name="warning_text">Are you sure you want to see the answer</string>
+    <string name="show_answer_button">Show Answer</string>
+    <string name="Cheating_toast">Cheating is wrong</string>
 </resources>
