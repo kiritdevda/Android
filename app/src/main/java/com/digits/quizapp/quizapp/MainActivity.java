@@ -12,14 +12,15 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView Qusetion;
-    private Button TrueButton;
-    private Button FalseButton;
-    private Button NextButton;
-    private Button CheatButton;
+    private TextView qusetion;
+    private Button trueButton;
+    private Button falseButton;
+    private Button nextButton;
+    private Button cheatButton;
     //private static final String KEY_INDEX="index";
     //private static final String KEY_ANSWER = "com.digits.quizapp.quizapp.Answer";
     private static final String TAG="QuizApp";
+    private static final String CHEATER_STATUS = "IsCheater";
 
     private int Toast_Message_ID;
     private Boolean Is_Cheater=Boolean.FALSE;
@@ -33,10 +34,10 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             if (this.Answer.equals(Answer)) {
-                Qusetion.setTextColor(Color.parseColor("#009900"));
+                qusetion.setTextColor(Color.parseColor("#009900"));
                 Toast_Message_ID = R.string.correct_toast;
             } else {
-                Qusetion.setTextColor(Color.parseColor("#CC3300"));
+                qusetion.setTextColor(Color.parseColor("#CC3300"));
                 Toast_Message_ID = R.string.incorrect_toast;
             }
         }
@@ -48,56 +49,58 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Log.d(TAG,"OnCreate Bulde called");
 
-        tf = new TrueFalse();
-        //Get questions and thier answers
-        Qusetion = (TextView)findViewById(R.id.question);
-        Qusetion.setText(tf.getQuestion());
-        Answer = tf.getAnswer();
-        CheatButton = (Button)findViewById(R.id.Cheat);
+        if (savedInstanceState != null) {
+            Is_Cheater = savedInstanceState.getBoolean(CHEATER_STATUS, Boolean.FALSE);}
 
-        //Intailze all buttons
-        TrueButton = (Button) findViewById(R.id.True);
-        FalseButton = (Button)findViewById(R.id.False);
-        NextButton = (Button)findViewById(R.id.Next);
+            setContentView(R.layout.activity_main);
+            Log.d(TAG, "OnCreate Bulde called");
 
-        Qusetion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tf.NextQuestion();
-                Qusetion.setText(tf.getQuestion());
-                Qusetion.setTextColor(Color.BLACK);
-                Answer = tf.getAnswer();
-            }
-        });
+            tf = new TrueFalse();
+            //Get questions and thier answers
+            qusetion = (TextView) findViewById(R.id.question);
+            qusetion.setText(tf.getQuestion());
+            Answer = tf.getAnswer();
+            cheatButton = (Button) findViewById(R.id.Cheat);
 
-        TrueButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                CheckAnswer("True");
-            }
-        });//End of TrueButton listener
+            //Intailze all buttons
+            trueButton = (Button) findViewById(R.id.True);
+            falseButton = (Button) findViewById(R.id.False);
+            nextButton = (Button) findViewById(R.id.Next);
 
-        FalseButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                CheckAnswer("False");
-            }
-        }); //End of FalseButton Listener
+            qusetion.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    tf.NextQuestion();
+                    qusetion.setText(tf.getQuestion());
+                    qusetion.setTextColor(Color.BLACK);
+                    Answer = tf.getAnswer();
+                }
+            });
 
-        NextButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                tf.NextQuestion();
-                Qusetion.setText(tf.getQuestion());
-                Qusetion.setTextColor(Color.BLACK);
-                Answer = tf.getAnswer();
-                Is_Cheater = Boolean.FALSE;
-            }
-        }); // End of NextButton Listener
+            trueButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    CheckAnswer("True");
+                }
+            });//End of trueButton listener
 
-        CheatButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View view){
-                /*
+            falseButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    CheckAnswer("False");
+                }
+            }); //End of falseButton Listener
+
+            nextButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    tf.NextQuestion();
+                    qusetion.setText(tf.getQuestion());
+                    qusetion.setTextColor(Color.BLACK);
+                    Answer = tf.getAnswer();
+                    Is_Cheater = Boolean.FALSE;
+                }
+            }); // End of nextButton Listener
+
+        /*
                 An intent is an object that a component can use to communicate with the OS.
                 The only components you have seen so far are activities, but there are also services, broadcast receivers,
                 and content providers.
@@ -111,20 +114,24 @@ public class MainActivity extends AppCompatActivity {
                 The Class object specifies the activity that the ActivityManager should start.
                 The Context object tells the ActivityManager which package the Class object can be found in.*/
 
-                Intent intent = new Intent(MainActivity.this,CheatActivity.class);
-                intent.putExtra(CheatActivity.KEY_ANSWER,Answer);
 
-             /*  We could have used startActivity(Intent intent) method however it would have created the new
+            cheatButton.setOnClickListener(new View.OnClickListener() {
+                                               public void onClick(View view) {
+
+                                                   Intent intent = new Intent(MainActivity.this, CheatActivity.class);
+                                                   intent.putExtra(CheatActivity.KEY_ANSWER, Answer);
+
+                /*  We could have used startActivity(Intent intent) method however it would have created the new
                  new Activity , but when the Child Activity closes off the onActivityResult(int reuestCode, int ResultCode,
                  Intent intent) is not called so we have called using following function
 
                 //startActivity(Intent)*/
 
-                startActivityForResult(intent,0);
-            }
+                                                   startActivityForResult(intent, 0);
+                                               }
+                                           }
+            );
         }
-        );
-    }
 
         /*onActivityResult() is been called when the child Activity is called using startActivityForResult(Intent intent,int requestCode)
         The Child Activity can pass on key-value pair in Intent to parent Activity
@@ -155,21 +162,20 @@ public class MainActivity extends AppCompatActivity {
 
         Note that your activity can pass into the stashed state without onDestroy() being called.
         However, you can always rely on onPause() and onSaveInstanceState(...) to be called.
-        Typically, you override onSaveInstanceState(...) to stash data in your Bundle
+        Typically, you override onSaveInstanceState(...) to stash data in your Bundle*/
 
           @Override
           public void onSaveInstanceState(Bundle savedInstanceState) {
             super.onSaveInstanceState(savedInstanceState);
             Log.i(TAG, "onSaveInstanceState");
-            savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+            savedInstanceState.putBoolean(CHEATER_STATUS,Is_Cheater);
 
         }
 
-    //Please add follwoing in oncreate to use the above Bundle savedInstanceState
-        if (savedInstanceState != null) {
-                mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0)
-        }
-    */
+    /*Please add follwoing in oncreate to use the above Bundle savedInstanceState
+    if (savedInstanceState != null) {
+        mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0)
+    }*/
 
     //Below are Lifecycle Method to learn the flow in android app
 
